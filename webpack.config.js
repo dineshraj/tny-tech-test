@@ -1,27 +1,31 @@
 const path = require('path');
 const babelConfig = require('./babel.config.json');
+const env = process.env.NODE_ENV || 'production';
+const isProduction = env === 'production';
+const mode = isProduction ? 'production' : 'development';
 
 module.exports = {
-  mode: 'development',
-  entry: './src/index.js',
+  mode,
+  entry: './src/server/index.tsx',
+  target: 'node',
   output: {
     filename: 'app.js',
-    path: path.resolve(__dirname, './public/js')
+    path: path.resolve(__dirname, './dist1')
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(tsx|ts|jsx|js)$/,
         exclude: /(node_modules|pubilc)/,
-        use: {
-          loader: 'babel-loader',
-          options: babelConfig
-        }
+        use: ['babel-loader', 'tsc-loader']
       },
       {
         test: /\.(css|scss)$/,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
-  }
+  },
+  resolve: {
+    extensions: ['.jsx', '.js', '.ts', '.tsx']
+  },
 };
